@@ -1,6 +1,8 @@
-const express = require('express');
-const app = express();
-const server = require('http').Server(app);
+import express from 'express';
+import http from 'http';
+
+const app: express.Express = express();
+const server = new http.Server(app);
 const io = require('socket.io')(server);
 
 server.listen(process.env.PORT || 3030);
@@ -8,6 +10,6 @@ server.listen(process.env.PORT || 3030);
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-app.get('/', (req: any, res: any) => {
+app.get('/', (_: any, res: any) => {
   res.render('room');
 });
