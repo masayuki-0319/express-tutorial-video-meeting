@@ -8,6 +8,6 @@ server.listen(process.env.PORT || 3030);
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-app.get('/', (req, res) => {
+app.get('/', (req: any, res: any) => {
   res.render('room');
 });
