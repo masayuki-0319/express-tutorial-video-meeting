@@ -1,6 +1,7 @@
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
+import { v4 } from 'uuid';
 
 const app: express.Express = express();
 const server = new http.Server(app);
@@ -12,5 +13,9 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 app.get('/', (_: any, res: express.Response) => {
-  res.render('room');
+  res.redirect(`/${v4()}`);
+});
+
+app.get('/:room', (req: express.Request, res: express.Response) => {
+  res.render('room', { roomId: req.params.room });
 });
