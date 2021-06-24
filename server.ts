@@ -22,6 +22,9 @@ app.get('/:room', (req: express.Request, res: express.Response) => {
 
 io.on('connection', (socket) => {
   socket.on('join-room', (roomId, userId) => {
+    console.log('roomId=', roomId);
+    console.log('userId=', userId);
+
     socket.join(roomId);
     socket.to(roomId);
     socket.broadcast.emit('user-connected', userId);
