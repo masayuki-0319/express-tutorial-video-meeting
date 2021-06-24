@@ -6,6 +6,7 @@ const myVideo = document.createElement('video');
 myVideo.muted = true;
 
 const peers = {};
+let myVideoStream;
 
 const addVideoStream = (video, stream) => {
   video.srcObject = stream;
@@ -37,6 +38,9 @@ navigator.mediaDevices
     audio: true,
   })
   .then((stream) => {
+    myVideoStream = stream;
+    console.log('stream', stream);
+
     addVideoStream(myVideo, stream);
 
     myPeer.on('call', (call) => {
@@ -64,3 +68,44 @@ socket.on('user-disconnected', (userId) => {
 myPeer.on('open', (userId) => {
   socket.emit('join-room', ROOM_ID, userId);
 });
+
+myPeer.on('disconnected', (userId) => {
+  console.log('disconnected=', userId);
+});
+
+const muteUnmute = (e) => {
+  console.log('myVideoStream', myVideoStream);
+  const enabled = myVideoStream.getAudioTracks()[0].enabled;
+
+  if (enabled) {
+    e.classList.add('active');
+    myVideoStream.getAudioTracks()[0].enabled = false;
+  } else {
+    e.classList.remove('active');
+    myVideoStream.getAudioTracks()[0].enabled = true;
+  }
+};
+
+const playStop = (e) => {
+  console.log('myVideoStream', myVideoStream);
+  const enabled = myVideoStream.getVideoTracks()[0].enabled;
+
+  if (enabled) {
+    e.classList.add('active');
+    myVideoStream.getVideoTracks()[0].enabled = false;
+  } else {
+    e.classList.remove('active');
+    myVideoStream.getVideoTracks()[0].enabled = true;
+  }
+};
+
+const leaveVideo = (e) => {
+  socket.disconnect();
+  myPeer.disconnect();
+
+  const videos = document.getElementsByTagName('video');
+
+  for (let i = videos.length - 1; i >= 0; --i) {
+    videos[i].remove();
+  }
+};
