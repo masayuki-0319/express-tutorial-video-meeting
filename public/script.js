@@ -61,7 +61,7 @@ navigator.mediaDevices
   });
 
 socket.on('user-disconnected', (userId) => {
-  console.log(userId);
+  console.log('user-disconnected id=', userId);
   if (peers[userId]) peers[userId].close();
 });
 

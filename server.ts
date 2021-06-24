@@ -29,7 +29,7 @@ io.on('connection', (socket) => {
     socket.to(roomId);
     socket.broadcast.emit('user-connected', userId);
 
-    socket.on('disconnected', () => {
+    socket.on('disconnect', () => {
       socket.to(roomId);
       socket.broadcast.emit('user-disconnected', userId);
     });
