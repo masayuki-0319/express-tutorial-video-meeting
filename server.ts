@@ -19,3 +19,11 @@ app.get('/', (_: any, res: express.Response) => {
 app.get('/:room', (req: express.Request, res: express.Response) => {
   res.render('room', { roomId: req.params.room });
 });
+
+io.on('connection', (socket) => {
+  socket.on('join-room', (roomId, userId) => {
+    socket.join(roomId);
+    socket.to(roomId);
+    socket.broadcast.emit('user-connected', userId);
+  });
+});
