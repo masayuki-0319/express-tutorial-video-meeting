@@ -14,6 +14,19 @@ const addVideoStream = (video, stream) => {
   videoWrap.append(video);
 };
 
+const connectToUser = (userId, stream) => {
+  const call = myPeer.call(userId, stream);
+  const video = document.createElement('video');
+
+  call.on('stream', (userVideoStream) => {
+    addVideoStream(video, userVideoStream);
+  });
+
+  call.on('close', () => {
+    video.remove();
+  });
+};
+
 navigator.mediaDevices
   .getUserMedia({
     video: true,
@@ -21,12 +34,15 @@ navigator.mediaDevices
   })
   .then((stream) => {
     addVideoStream(myVideo, stream);
+
+    myPeer.on('call', (call) => {
+      call.answer(stream);
+    });
+    socket.on('user-connected', (userId) => {
+      connectToUser(userId, stream);
+    });
   });
 
 myPeer.on('open', (userId) => {
   socket.emit('join-room', ROOM_ID, userId);
-});
-
-socket.on('user-connected', (userId) => {
-  console.log('userId=', userId);
 });
