@@ -28,5 +28,10 @@ io.on('connection', (socket) => {
     socket.join(roomId);
     socket.to(roomId);
     socket.broadcast.emit('user-connected', userId);
+
+    socket.on('disconnect', () => {
+      socket.to(roomId);
+      socket.broadcast.emit('user-disconnected', userId);
+    });
   });
 });
